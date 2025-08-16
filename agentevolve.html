@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgentEvolve Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body class="bg-gray-900 text-white">
+  <h1 class="text-3xl p-4">AgentEvolve Hub</h1>
+  <pre class="m-2 text-sm">{ "agents": [{ "id": "agent1", "context": "Domain Expertise", "status": "Evolving" }] }</pre>
+  <a class="m-2 p-2 bg-green-600 rounded" href="https://buy.stripe.com/test_789">Trial: $500/mo</a>
+  <script>
+    fetch('https://api.airtable.com/v0/appm6npBdMUcn3USF/Agents', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer YOUR_AIRTABLE_KEY', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fields: { id: 'agent1', context: 'Domain Expertise' } })
+    });
+    gsap.from('a', { opacity: 0, y: 20, duration: 1, ease: 'power2.out' });
+  </script>
+</body>
+</html>
