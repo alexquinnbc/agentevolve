@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding Transition Prototype</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1F2937;
+            color: #FFFFFF;
+        }
+        .button-hover {
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .button-hover:hover {
+            background-color: #0D9488;
+            transform: translateY(-1px);
+        }
+        .slide-enter {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        .slide-enter-active {
+            opacity: 1;
+            transform: translateX(0);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .slide-exit {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .slide-exit-active {
+            opacity: 0;
+            transform: translateX(-100%);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .progress-step {
+            width: 25%;
+            height: 4px;
+            background: #4B5563;
+            transition: background 0.3s;
+        }
+        .progress-step-active {
+            background: #0D9488;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4">
+    <div class="max-w-md mx-auto">
+        <div class="flex justify-between mb-8 text-sm text-gray-400">
+            <span class="progress-step" data-step="1"></span>
+            <span class="progress-step" data-step="2"></span>
+            <span class="progress-step" data-step="3"></span>
+            <span class="progress-step" data-step="4"></span>
+        </div>
+        <div class="screens">
+            <div class="screen slide-enter slide-enter-active">
+                <div class="bg-gray-800 p-6 rounded-xl shadow-md text-center">
+                    <h1 class="text-2xl font-semibold mb-4">Welcome</h1>
+                    <p class="text-gray-400 mb-6">Start your journey with ContextForge.</p>
+                    <button class="w-full py-3 bg-teal-600 text-white rounded-lg button-hover">Next</button>
+                </div>
+            </div>
+            <div class="screen hidden">
+                <div class="bg-gray-800 p-6 rounded-xl shadow-md text-center">
+                    <h1 class="text-2xl font-semibold mb-4">Features</h1>
+                    <p class="text-gray-400 mb-6">Explore context and prompt tools.</p>
+                    <button class="w-full py-3 bg-teal-600 text-white rounded-lg button-hover">Next</button>
+                </div>
+            </div>
+            <div class="screen hidden">
+                <div class="bg-gray-800 p-6 rounded-xl shadow-md text-center">
+                    <h1 class="text-2xl font-semibold mb-4">Setup Context</h1>
+                    <input type="text" placeholder="Context Name" class="w-full p-3 mb-4 bg-gray-700 rounded-lg">
+                    <button class="w-full py-3 bg-teal-600 text-white rounded-lg button-hover" disabled>Save</button>
+                </div>
+            </div>
+            <div class="screen hidden">
+                <div class="bg-gray-800 p-6 rounded-xl shadow-md text-center">
+                    <h1 class="text-2xl font-semibold mb-4">Chatbot Intro</h1>
+                    <p class="text-gray-400 mb-6">Launch your chosen chatbot.</p>
+                    <button class="w-full py-3 bg-teal-600 text-white rounded-lg button-hover">Launch</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const screens = document.querySelectorAll('.screen');
+        let currentScreen = 0;
+
+        function navigate(step) {
+            screens[currentScreen].classList.add('slide-exit');
+            screens[currentScreen].classList.remove('slide-enter-active');
+            setTimeout(() => {
+                screens[currentScreen].classList.add('hidden');
+                screens[currentScreen].classList.remove('slide-exit-active');
+                currentScreen = step;
+                screens[currentScreen].classList.remove('hidden', 'slide-exit');
+                screens[currentScreen].classList.add('slide-enter-active');
+                updateProgress();
+                checkValidation();
+            }, 300);
+        }
+
+        document.querySelectorAll('button').forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                if (index === 2 && !document.querySelector('input').value) return; // Validate context name
+                navigate((currentScreen + 1) % screens.length);
+            });
+        });
+
+        function updateProgress() {
+            document.querySelectorAll('.progress-step').forEach((step, idx) => {
+                step.classList.toggle('progress-step-active', idx <= currentScreen);
+            });
+        }
+
+        function checkValidation() {
+            const saveBtn = document.querySelectorAll('button')[2];
+            const input = document.querySelector('input');
+            saveBtn.disabled = !input.value.trim();
+            input.addEventListener('input', () => {
+                saveBtn.disabled = !input.value.trim();
+            });
+        }
+        updateProgress();
+    </script>
+</body>
+</html>
